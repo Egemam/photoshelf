@@ -20,7 +20,7 @@ model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32")
 model.to(device)
 
 print(device)
-def compare_image_with_text(processed_image, a, th):
+def compare_image_with_text(processed_image, img_path, a, th):
     detected = []
     try:
         texts = [[a]]
@@ -32,7 +32,7 @@ def compare_image_with_text(processed_image, a, th):
 
         if len(results[0]["labels"]) > 0:
             print("Object detected in the image!\n")
-            detected.append(processed_image)
+            detected.append(img_path)
         else:
             print("Did not detect the object in the image.\n")
     except Exception as e:
@@ -43,7 +43,7 @@ def compare_image_with_text(processed_image, a, th):
 # Function to manage multiple image processing and comparison tasks
 def result(text, mw, th):
     detected = []
-    img_dir = "..\images"
+    img_dir = "" + os.getcwd() + "\\images"
     fcontent = os.listdir(img_dir)
     image_paths = [os.path.join(img_dir, imag) for imag in fcontent]
 
@@ -54,7 +54,7 @@ def result(text, mw, th):
             processed_image = Image.open(img_path)
             if processed_image:
                 # Then, compare it with the text
-                futures.append(executor.submit(compare_image_with_text, processed_image, text, th))
+                futures.append(executor.submit(compare_image_with_text, processed_image, img_path, text, th))
 
         for future in concurrent.futures.as_completed(futures):
             result = future.result()

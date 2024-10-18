@@ -35,14 +35,24 @@ with st.sidebar:
             print(f"Destination Path: {destination_path}")
             shutil.copyfile(source_path, destination_path)
 
-req = st.text_input("Enter your request:", placeholder="2 cats")
+request = st.text_input("Enter your request:", placeholder="2 cats")
 worker_amount = st.slider('Choose number of workers()', max_value=10, min_value= 1)
 threshold = st.number_input('Choose the threshold', max_value=1.0, min_value= 0.0, step = 0.1)
 if st.button("Search"):
-    current_directorye = os.path.join(os.path.dirname(os.getcwd()) + "\\", "content", req)
-    if not os.path.exists(str(current_directorye)):
-        os.makedirs(current_directorye)
-    result = ai.result(req,worker_amount,threshold)
+    target_directory = os.path.join(os.path.dirname(os.getcwd())+ "\\photoshelf\\", "results", request)
+    if not os.path.exists(str(target_directory)):
+        os.makedirs(target_directory)
+    result = ai.result(request,worker_amount,threshold)
+    print(result)
+    for img in result:
+        print(img)
+        splitted = img.split("\\")
+        img_file_name = splitted[-1]
+        destination_path = os.path.join(target_directory,img_file_name)
+        source_path = os.path.join(os.path.dirname(os.getcwd()) + "\\photoshelf\\", "images", img_file_name)
+        print(f"Source Path: {source_path}")
+        print(f"Destination Path: {destination_path}")
+        shutil.copyfile(source_path, destination_path)
 
 
 
